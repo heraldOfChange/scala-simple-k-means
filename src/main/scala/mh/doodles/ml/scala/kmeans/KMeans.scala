@@ -1,5 +1,8 @@
 package mh.doodles.ml.scala.kmeans
 
+import scala.annotation.tailrec
+import scala.util.Random
+
 class KMeans {
 
   /**
@@ -7,7 +10,17 @@ class KMeans {
    *
    * @return a `DataSet` or a List[List[Double]]
    */
-  def generatePoints: DataSet = ???
+  def generatePoints: DataSet = {
+    @tailrec
+    def generatePoint(ds: DataSet = List.empty): DataSet =
+      if (ds.lengthCompare(expectedPoints) != 0)
+        generatePoint((List.fill(dimensions) {
+          (Random.nextDouble * (pointBounds * 2)) - pointBounds
+        } :: ds).distinct)
+      else ds
+
+    generatePoint()
+  }
 
   /**
    * method used to calculate the square distance between two `DataPoints`
