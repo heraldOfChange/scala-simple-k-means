@@ -28,9 +28,15 @@ class KMeans {
    * @param centroid a `DataPoint` that is recalculated on iteration
    * @param reference the `DataPoint` in question
    *
-   * @return a non-negative distance as a Double type
+   * @return a non-negative `DataPoint` distance as a Double
    */
-  def squareDistance(centroid: DataPoint, reference: DataPoint): Double = ???
+  def euclideanDistance(centroid: DataPoint, reference: DataPoint): Double = {
+    Math.sqrt {
+      List(centroid, reference).transpose.map { dimensionValues =>
+        Math.pow(dimensionValues.reduceLeft(_ - _), 2)
+      }.sum
+    }
+  }
 
   /**
    * method that takes two initial centroids and calculates the best possible cluster over iterations

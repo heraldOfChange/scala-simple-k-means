@@ -30,12 +30,15 @@ data configuration
 ```
 val dimensions: Int
 val pointBounds: Int
+val percentPoints: Double
+
+val expectedPoints: Int
 ```
 
 ### KMeans members
 methods
 ```
 def generateData: DataSet
-def squareDistance: Double
+def euclideanDistance: Double
 def refineClusters: Map[DataPoint, DataSet]
 ```
