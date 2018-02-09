@@ -8,7 +8,7 @@ class KMeans {
   /**
    * method used to generate some training data
    *
-   * @return a `DataSet` or a List[List[Double]]
+   * @return a `DataSet` or a `List[List[Double]]`
    */
   def generatePoints: DataSet = {
     @tailrec
@@ -23,28 +23,52 @@ class KMeans {
   }
 
   /**
-   * method used to calculate the square distance between two `DataPoints`
+   * method used to calculate the distance of some `DataPoints`
    *
-   * @param centroid a `DataPoint` that is recalculated on iteration
-   * @param reference the `DataPoint` in question
-   *
-   * @return a non-negative `DataPoint` distance as a Double
+   * @param dataSet a list of `DataPoints` to calculate the distance on
+   * @return a non-negative `DataPoint` average distance as a Double
    */
-  def euclideanDistance(centroid: DataPoint, reference: DataPoint): Double = {
+  def euclideanDistance(dataSet: DataSet): Double =
     Math.sqrt {
-      List(centroid, reference).transpose.map { dimensionValues =>
+      dataSet.transpose.map { dimensionValues =>
         Math.pow(dimensionValues.reduceLeft(_ - _), 2)
       }.sum
     }
-  }
 
   /**
    * method that takes two initial centroids and calculates the best possible cluster over iterations
    *
-   * @param initialCentroids the randomly selected initial cluster centroids
-   * @param trainingData the remaining data points
-   *
+   * @param trainingData the `DataSet` containing `DataPoints` to run KMeans on
    * @return the most accurate cluster found using the KMeans approach
    */
-  def refineClusters(initialCentroids: DataSet, trainingData: DataSet): Map[DataPoint, DataSet] = ???
+  def trainKMeans(trainingData: DataSet): (Double, Map[DataPoint, DataSet]) = {
+    def createClusters(centroids: DataSet): Map[DataPoint, DataSet] =
+      trainingData.map { dataPoint =>
+        centroids.reduceLeft { (a, b) =>
+          if (euclideanDistance(List(a, dataPoint)) < euclideanDistance(List(b, dataPoint))) a else b
+        } -> dataPoint
+      }.groupBy(_._1).map(x => (x._1, x._2.map(_._2)))
+
+    @tailrec
+    def recalculateCentroids(clusters: Map[DataPoint, DataSet], iterations: Int): Map[DataPoint, DataSet] = {
+      if (iterations > 0) {
+        val result: DataSet = clusters.map { cluster =>
+          val transposed: List[List[Double]] = cluster._2.transpose
+          transposed.map(clusterAvg => clusterAvg.sum / cluster._2.size)
+        }.toList
+        recalculateCentroids(createClusters(result), iterations - 1)
+      } else clusters
+    }
+
+    (for (r <- 0 to runs) yield {
+      val rand = new Random(r)
+      val initialCentroids: DataSet = rand.shuffle(trainingData).take(2)
+      val initialClusters: Map[DataPoint, DataSet] = createClusters(initialCentroids)
+      recalculateCentroids(initialClusters, iterations)
+    }).map { trainingInstance =>
+      val clusterDistribution = trainingInstance.mapValues(euclideanDistance).values.toList
+      val clusterDistributionAvg = clusterDistribution.sum / clusterDistribution.size
+      (clusterDistributionAvg, trainingInstance)
+    }.reduceLeft((a, b) => if (a._1 < b._1) a else b)
+  }
 }

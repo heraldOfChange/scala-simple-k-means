@@ -7,7 +7,6 @@
   - bounds
 * select 2 initial centroids
 * group remaining points to nearest centroid
-  - square distance sqrt((x1-y1)^2 + (xn - yn)^2)
 * loop to calculate cluster means as centroids & group all points to nearest cluster
 
 ## SPEC
@@ -40,5 +39,7 @@ methods
 ```
 def generateData: DataSet
 def euclideanDistance: Double
-def refineClusters: Map[DataPoint, DataSet]
+def trainKMeans: (Double, Map[DataPoint, DataSet])
+ - def createClusters: Map[DataPoint, DataSet]
+ - def recalculateCentroids: Map[DataPoint, DataSet]
 ```

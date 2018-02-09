@@ -1,6 +1,6 @@
 package mh.doodles.ml.scala.kmeans
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 class KMeansTest extends FlatSpec with Matchers {
   val kmeans: KMeans = new KMeans()
@@ -13,13 +13,15 @@ class KMeansTest extends FlatSpec with Matchers {
   }
 
   "euclideanDistance" should "work for single dimension changes ie: List(1,2) and List(1,6)" in {
-    val sample1: DataPoint = List(1, 2)
-    val sample2: DataPoint = List(1, 6)
-    kmeans.euclideanDistance(sample1, sample2) shouldBe 4
+    val sampleData: DataSet = List(List(1.0, 2.0), List(1.0, 6.0))
+    kmeans.euclideanDistance(sampleData) shouldBe 4.0
   }
   it should "work for alternating dimension changes ie: List(2,3) and List(6,-6)" in {
-    val sample1: DataPoint =  List(2, 3)
-    val sample2: DataPoint = List(6, -6)
-    kmeans.euclideanDistance(sample1, sample2) shouldBe 9.848857801796104
+    val sampleData: DataSet = List(List(2.0, 3.0), List(6.0, -6.0))
+    kmeans.euclideanDistance(sampleData) shouldBe 9.848857801796104
+  }
+
+  "refineClusters" should "return a map with count of `kValue` clusters" in {
+    kmeans.trainKMeans(kmeans.generatePoints)._2.keySet.size shouldBe kValue
   }
 }

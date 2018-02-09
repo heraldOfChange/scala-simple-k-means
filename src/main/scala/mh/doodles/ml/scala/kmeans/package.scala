@@ -6,8 +6,9 @@ package object kmeans {
   type DataSet = List[DataPoint]
 
   // KMeans configuration
-  val runs: Int = 3
-  val iterations: Int = 100
+  val kValue: Int = 2
+  val runs: Int = 10
+  val iterations: Int = 1000
 
   // Data configuration
   val dimensions: Int = 2
