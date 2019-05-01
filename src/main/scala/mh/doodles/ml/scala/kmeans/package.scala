@@ -6,7 +6,7 @@ package object kmeans {
   type DataSet = List[DataPoint]
 
   // KMeans configuration
-  val kValue: Int = 2
+  val kCount: Int = 2
   val runs: Int = 10
   val iterations: Int = 1000
 
@@ -15,5 +15,6 @@ package object kmeans {
   val pointBounds: Int = 10
   val percentPoints: Double = 0.1
 
-  val expectedPoints: Int = (percentPoints * Math.pow(pointBounds + 1, dimensions)).toInt // expected number of generated points
+  // expected number of generated points based on Data configuration
+  val expectedPoints: Int = (percentPoints * Math.pow(pointBounds + 1, dimensions)).toInt
 }

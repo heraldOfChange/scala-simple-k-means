@@ -16,12 +16,12 @@ class KMeansTest extends FlatSpec with Matchers {
     val sampleData: DataSet = List(List(1.0, 2.0), List(1.0, 6.0))
     kmeans.euclideanDistance(sampleData) shouldBe 4.0
   }
-  it should "work for alternating dimension changes ie: List(2,3) and List(6,-6)" in {
+  it should "work for both dimension changes ie: List(2,3) and List(6,-6)" in {
     val sampleData: DataSet = List(List(2.0, 3.0), List(6.0, -6.0))
     kmeans.euclideanDistance(sampleData) shouldBe 9.848857801796104
   }
 
-  "refineClusters" should "return a map with count of `kValue` clusters" in {
-    kmeans.trainKMeans(kmeans.generatePoints)._2.keySet.size shouldBe kValue
+  "refineClusters" should "return a map with count of `kCount` clusters" in {
+    kmeans.trainKMeans(kmeans.generatePoints)._2.keySet.size shouldBe kCount
   }
 }
